@@ -1,0 +1,20 @@
+html.locked body, body.locked { overflow: hidden; }
+html.locked .app, html.locked .nav,
+body.locked .app, body.locked .nav { display: none !important; }
+.gate { display: none; min-height: 100vh; align-items: center; justify-content: center; padding: 24px; }
+html.locked .gate, body.locked .gate { display: flex; }
+.gate-card { width: min(420px, 100%); background: #211e1a; border: 1px solid rgba(243,232,214,.16); border-radius: 24px; padding: 28px 24px 24px; box-shadow: 0 18px 50px rgba(0,0,0,.35); }
+.gate-card small { color: #c4a574; letter-spacing: .22em; font-size: 11px; text-transform: uppercase; }
+.gate-card h1 { font-family: "Noto Serif TC", serif; font-size: 36px; margin: 8px 0 10px; }
+.remember { display: flex; align-items: center; gap: 8px; }
+.cal-legend { display: flex !important; flex-wrap: wrap !important; gap: 10px 14px !important; margin: 12px 0 !important; }
+.cal-legend span { display: inline-flex !important; align-items: center !important; gap: 6px !important; font-size: 12px !important; color: #9a8d7c !important; }
+.cal-grid { display: grid !important; grid-template-columns: repeat(7, minmax(0, 1fr)) !important; gap: 6px !important; width: 100% !important; }
+.cal-dow { text-align: center; font-size: 11px; color: #6e6458; padding: 4px 0; }
+.cal-cell { min-height: 72px; background: #1a1815; border: 1px solid rgba(243,232,214,.08); border-radius: 12px; padding: 6px; cursor: pointer; }
+.cal-cell.on { border-color: rgba(196,165,116,.5); background: rgba(196,165,116,.08); }
+.cal-cell.out { opacity: .35; }
+.cal-cell .num { font-size: 12px; color: #9a8d7c; }
+.cal-cell.today .num { color: #e2c9a0; font-weight: 700; }
+.cal-dots { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 6px; }
+@media (max-width: 700px) { .cal-cell { min-height: 56px; } }
