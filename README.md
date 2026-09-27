@@ -1,2 +1,5 @@
-# minicake-lol.github.io
-八面 · 人生儀表板
+# 八面
+
+Website: https://minicake-lol.github.io/
+
+Personal life dashboard. Data stays in your browser.
