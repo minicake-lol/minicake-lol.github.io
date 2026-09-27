@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>八面 · 人生儀表板</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <small>Life OS · Private</small>
+        <h1>八面</h1>
+        <p id="hello">人生唔止一個面向。今日睇清楚自己偏咗邊。</p>
+      </div>
+      <div class="header-actions">
+        <span class="sync-pill" id="sync-pill"><i></i><span>本機</span></span>
+        <button class="btn ghost" id="btn-voice">粵語語音</button>
+        <button class="btn ghost" data-go="review">週檢</button>
+        <button class="btn primary" data-go="checkin">今日打卡</button>
+      </div>
+    </header>
+    <section id="page-home" class="page active"></section>
+    <p style="padding:24px;color:#9a8d7c">Loading…</p>
+  <script src="app.js"></script>
+</body>
+</html>
