@@ -7,18 +7,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260928c" />
+  <link rel="stylesheet" href="cal-fix.css?v=1" />
+  <script>
+    (function () {
+      try {
+        if (!sessionStorage.getItem("eightfaces-session") && !localStorage.getItem("eightfaces-session")) {
+          document.documentElement.classList.add("locked");
+        }
+      } catch (e) { document.documentElement.classList.add("locked"); }
+    })();
+  </script>
 </head>
 <body>
+  <div id="gate" class="gate">
+    <div class="gate-card">
+      <small>Life OS · Private</small>
+      <h1>八面</h1>
+      <p class="muted" id="gate-lead">呢個儀表板只得你睇。第一次用先設密碼，之後每次打開都要登入。</p>
+      <div id="gate-setup">
+        <label class="field">你點稱呼自己</label>
+        <input id="gate-name" type="text" placeholder="例如：阿 Long" autocomplete="username" />
+        <label class="field">設定密碼</label>
+        <input id="gate-pass1" type="password" placeholder="至少 6 個字" autocomplete="new-password" />
+        <label class="field">再入一次密碼</label>
+        <input id="gate-pass2" type="password" placeholder="確認密碼" autocomplete="new-password" />
+        <button class="btn primary" id="gate-create" style="margin-top:16px;width:100%">開戶並進入</button>
+      </div>
+      <div id="gate-login" hidden>
+        <label class="field">密碼</label>
+        <input id="gate-pass" type="password" placeholder="輸入你嘅八面密碼" autocomplete="current-password" />
+        <label class="field remember"><input type="checkbox" id="gate-remember" /> 喺呢部裝置保持登入</label>
+        <button class="btn primary" id="gate-enter" style="margin-top:16px;width:100%">登入</button>
+      </div>
+      <div class="faint" id="gate-err" style="margin-top:10px;color:#d4786a"></div>
+    </div>
+  </div>
   <div class="app">
     <header class="top">
-      <div class="brand">
-        <small>Life OS · Private</small>
-        <h1>八面</h1>
-        <p id="hello">人生唔止一個面向。今日睇清楚自己偏咗邊。</p>
-      </div>
+      <div class="brand"><small>Life OS · Private</small><h1>八面</h1><p id="hello">人生唔止一個面向。今日睇清楚自己偏咗邊。</p></div>
       <div class="header-actions">
         <span class="sync-pill" id="sync-pill"><i></i><span>本機</span></span>
+        <button class="btn ghost" id="btn-logout">登出</button>
         <button class="btn ghost" id="btn-voice">粵語語音</button>
         <button class="btn ghost" data-go="plan">規劃</button>
         <button class="btn ghost" data-go="review">週檢</button>
@@ -29,7 +59,7 @@
       <div class="grid home-grid">
         <div class="card"><h2>生命輪 <span class="muted" id="wheel-updated"></span></h2><canvas id="wheel" width="560" height="420"></canvas><div class="scores" id="score-list"></div></div>
         <div class="grid">
-          <div class="card"><h2>今日狀態</h2><div class="muted" style="margin-bottom:8px">你而家能量點？</div><div class="energy" id="energy"><button class="chip" data-energy="low">低 · 守</button><button class="chip" data-energy="mid">中 · 穩</button><button class="chip" data-energy="high">高 · 衝</button></div><div id="season-tag" class="muted" style="margin-top:12px"></div></div>
+          <div class="card"><h2>今日狀態</h2><div class="energy" id="energy"><button class="chip" data-energy="low">低 · 守</button><button class="chip" data-energy="mid">中 · 穩</button><button class="chip" data-energy="high">高 · 衝</button></div><div id="season-tag" class="muted" style="margin-top:12px"></div></div>
           <div class="card"><h2>今日一件被忽略嘅事</h2><div class="action-box" id="today-action"></div><div class="row" style="margin-top:10px"><button class="btn primary" id="do-action">標記做咗</button><button class="btn ghost" id="shuffle-action">換一件</button></div></div>
           <div class="card"><h2>警報</h2><div id="alerts"></div></div>
           <div class="card"><h2>本週三件事</h2><div id="focus-list" class="list"></div><button class="btn" style="margin-top:10px" data-go="review">改本週焦點</button></div>
@@ -37,7 +67,7 @@
       </div>
       <div class="grid home-lower" style="margin-top:16px">
         <div class="card"><h2>呢個月規劃 <span class="muted" id="home-month-label"></span></h2><div id="home-month-plan"></div><div class="row" style="margin-top:10px"><button class="btn primary" data-go="plan">寫月／年規劃</button><button class="btn ghost" data-go="calendar">開月曆</button></div></div>
-        <div class="card"><h2>人物</h2><p class="muted" style="margin-bottom:8px">由總覽入去跟進。</p><div id="home-people" class="list"></div><button class="btn" style="margin-top:10px" data-go="people">管理人物</button></div>
+        <div class="card"><h2>人物</h2><div id="home-people" class="list"></div><button class="btn" style="margin-top:10px" data-go="people">管理人物</button></div>
         <div class="card"><h2>內心</h2><div id="home-inner" class="muted"></div><button class="btn" style="margin-top:10px" data-go="inner">寫內心頁</button></div>
       </div>
     </section>
@@ -48,14 +78,15 @@
     <section id="page-review" class="page"><div class="card"><h2>週檢</h2><div id="review-sliders"></div><textarea id="review-neglect"></textarea><textarea id="review-win"></textarea><textarea id="review-focus"></textarea><div class="energy" id="season-mode"><button class="chip" data-season="balance">平衡月</button><button class="chip" data-season="sprint">衝刺月</button></div><input id="season-note" type="text" /><button class="btn primary" id="save-review">完成週檢</button><div id="review-hist" class="history"></div></div></section>
     <section id="page-checkin" class="page"><div class="card"><h2>今日日記 <span class="muted" id="journal-status"></span></h2><div class="row" style="align-items:flex-end"><div style="flex:1;min-width:160px"><label class="field">日期</label><input id="journal-date" type="date" /></div><div><label class="field">能量</label><div class="energy" id="checkin-energy"><button class="chip" data-energy="low">低 · 守</button><button class="chip" data-energy="mid">中 · 穩</button><button class="chip" data-energy="high">高 · 衝</button></div></div></div><label class="field">今日總記</label><textarea id="journal-body"></textarea><label class="field">今日有花過心機嘅面向</label><div class="energy wrap" id="journal-hot"></div><label class="field">八面分記</label><div class="diary-grid" id="journal-faces"></div><label class="field">呢個月規劃 · 今日有咪推進？</label><div id="journal-plans" class="list"></div><div class="row" style="margin-top:14px"><button class="btn primary" id="save-checkin">儲存呢日</button><button class="btn" id="btn-voice-2">粵語語音日記</button><button class="btn ghost" data-go="plan">去規劃</button></div></div><div class="card" style="margin-top:16px"><h2>日記本</h2><div id="journal-hist" class="history"></div></div></section>
     <section id="page-plan" class="page"><div class="grid two"><div class="card"><h2>月規劃 <span class="muted" id="plan-month-title"></span></h2><div class="row"><button class="btn ghost" id="plan-month-prev">上月</button><input id="plan-month" type="month" style="max-width:180px" /><button class="btn ghost" id="plan-month-next">下月</button></div><label class="field">呢個月一句主題</label><input id="plan-month-theme" type="text" /><div id="plan-month-list"></div></div><div class="card"><h2>年規劃 <span class="muted" id="plan-year-title"></span></h2><div class="row"><button class="btn ghost" id="plan-year-prev">上年</button><input id="plan-year" type="number" min="2020" max="2040" style="max-width:120px" /><button class="btn ghost" id="plan-year-next">下年</button></div><label class="field">今年一句主題</label><input id="plan-year-theme" type="text" /><div id="plan-year-list"></div></div></div></section>
-    <section id="page-calendar" class="page"><div class="card"><h2>八色月曆 <span class="muted" id="cal-title"></span></h2><div class="row"><button class="btn ghost" id="cal-prev">上月</button><input id="cal-month" type="month" style="max-width:180px" /><button class="btn ghost" id="cal-next">下月</button><button class="btn" data-go="plan">改規劃</button></div><div class="cal-legend" id="cal-legend"></div><div class="cal-grid" id="cal-grid"></div></div><div class="card" style="margin-top:16px"><h2 id="cal-day-title">擇一日</h2><div id="cal-day-body" class="muted">撸月曆上某一格。</div></div></section>
+    <section id="page-calendar" class="page"><div class="card"><h2>八色月曆 <span class="muted" id="cal-title"></span></h2><div class="row"><button class="btn ghost" id="cal-prev">上月</button><input id="cal-month" type="month" style="max-width:180px" /><button class="btn ghost" id="cal-next">下月</button><button class="btn" data-go="plan">改規劃</button></div><div class="cal-legend" id="cal-legend"></div><div class="cal-grid" id="cal-grid" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;width:100%"></div></div><div class="card" style="margin-top:16px"><h2 id="cal-day-title">擇一日</h2><div id="cal-day-body" class="muted">撸月曆上某一格。</div></div></section>
     <section id="page-settings" class="page"><div class="grid two"><div class="card"><h2>設定</h2><input id="profile-name" type="text" /><button class="btn" id="save-name">儲存名稱</button><button class="btn" id="export-data">匯出</button><button class="btn" id="import-data">匯入</button><button class="btn danger" id="reset-data">清空</button><input type="file" id="import-file" accept="application/json" hidden /></div><div class="card"><h2>雲端</h2><input id="cloud-id" type="text" /><input id="cloud-pass" type="password" /><label><input type="checkbox" id="cloud-auto" checked /> 自動上傳</label><div id="cloud-status" class="muted"></div><button class="btn primary" id="cloud-create">開通</button><button class="btn" id="cloud-pull">拉回</button><button class="btn" id="cloud-push">上傳</button><button class="btn" id="cloud-copy">複製</button></div></div></section>
   </div>
   <nav class="nav"><button data-go="home" class="active">總覽</button><button data-go="checkin">日記</button><button data-go="calendar">月曆</button><button data-go="plan">規劃</button><button data-go="review">週檢</button><button data-go="settings">設定</button></nav>
   <div class="modal-bg" id="modal"><div class="modal" id="modal-body"></div></div>
   <div class="modal-bg" id="voice-modal"><div class="modal voice-shell"><h2>粵語語音日記</h2><div class="step-dots" id="voice-dots"><span class="on"></span><span></span></div><p class="muted" id="voice-q"></p><button class="mic" id="mic-btn">講</button><div class="transcript" id="voice-live"></div><div id="voice-parsed" class="muted"></div><button class="btn" id="voice-skip">跳過</button><button class="btn primary" id="voice-save">存低</button><button class="btn ghost" id="voice-close">關閉</button></div></div>
-  <script src="app-core.js"></script>
-  <script src="app-ui.js"></script>
-  <script src="plan-cal.js"></script>
+  <script src="app-core.js?v=20260928c"></script>
+  <script src="app-ui.js?v=20260928c"></script>
+  <script src="plan-cal.js?v=20260928c"></script>
+  <script src="auth.js?v=20260928c"></script>
 </body>
 </html>
